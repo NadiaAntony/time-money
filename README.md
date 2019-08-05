@@ -1,2 +1,2 @@
-# time-money
-App to showcase the time value of money
+# Time Value of Money
+App to showcase the adage 'Time is Money' 
