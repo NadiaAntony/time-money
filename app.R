@@ -17,6 +17,9 @@ get_box <- function(name, price, wage, amount) {
     , style = "border-style: dashed; border-width: 2px; text-align: center;")
 }
 
+more_choices = c("Top notch camera", "Dinner at the most expensive restaurant in Des Moines", "Persian Cat", "Bose Headphones")
+names(more_choices) <- c("Top notch camera", "Dinner at expensive restaurant", "Persian Cat", "Bose Headphones")
+
 ui <- fluidPage(theme = shinytheme("cerulean"),
                 
     includeCSS("css/styles.css"),
@@ -50,7 +53,7 @@ ui <- fluidPage(theme = shinytheme("cerulean"),
             htmlOutput("default"),
             conditionalPanel(condition = "input.more", htmlOutput("selected_camera")),
             selectizeInput("more", label = "Add More", multiple = TRUE,
-                           choices = c("Top notch camera", "Dinner at expensive restaurant", "Persian Cat", "Bose Headphones"), selected = NULL)
+                           choices = more_choices, selected = NULL)
         )
     )
 )
@@ -99,23 +102,10 @@ server <- function(input, output) {
         )
     })
     output$selected_camera <- renderUI({
-        output_camera <- output_dinner <- output_cat <- output_bose <- div()
-        
-        if("Top notch camera" %in% input$more)
-            output_camera <- get_box("Top notch camera", price = 2000, wage = input$wage, amount = input$amount)
-        if("Dinner at expensive restaurant" %in% input$more)
-            output_dinner <- get_box("Dinner at the most expensive restaurant in Des Moines", price = 2000, wage = input$wage, amount = input$amount)
-        if("Persian Cat" %in% input$more)
-            output_cat <- get_box("Persian Cat", price = 2000, wage = input$wage, amount = input$amount)
-        if("Bose Headphones" %in% input$more)
-            output_bose <- get_box("Bose Headphones", price = 2000, wage = input$wage, amount = input$amount)
         return(
             tagList(
                 fluidRow(
-                    column(6, output_camera),
-                    column(6, output_cat),
-                    column(6, output_bose),
-                    column(6, output_dinner)
+                    lapply(input$more, function(x) column(6, get_box(x, price = 2000, wage = input$wage, amount = input$amount)))
                 )
             )
         )
