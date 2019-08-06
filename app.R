@@ -14,10 +14,10 @@ get_box <- function(name, price, wage, amount) {
         div(paste0("Cost for one in Man-Hours: ", round(price / wage))),
         div(paste0("Total number you can Afford: ", floor(amount / price)))
     )
-    , style = "border-style: dashed; border-width: 2px; text-align: center;")
+    , style = "border-style: dashed; border-width: 2px; margin:10px; text-align: center;")
 }
 
-more_choices = c("Top notch camera", "Dinner at the most expensive restaurant in Des Moines", "Persian Cat", "Bose Headphones")
+more_choices = c("Top notch camera", "Dinner at expensive restaurant", "Persian Cat", "Bose Headphones")
 names(more_choices) <- c("Top notch camera", "Dinner at expensive restaurant", "Persian Cat", "Bose Headphones")
 
 ui <- fluidPage(theme = shinytheme("cerulean"),
@@ -79,7 +79,6 @@ server <- function(input, output) {
                            get_box("Apple iPhone XS", price = 999, wage = input$wage, amount = input$amount)
                     )
                 ),
-                br(),
                 fluidRow(
                     column(6,
                            get_box("Netflix subscription", price = 12.99, wage = input$wage, amount = input$amount)
@@ -88,7 +87,6 @@ server <- function(input, output) {
                            get_box("Latest Android", price = 700, wage = input$wage, amount = input$amount)
                     )
                 ),
-                br(),
                 fluidRow(
                     column(6,
                            get_box("DJI drone", price = 1200, wage = input$wage, amount = input$amount)
@@ -96,8 +94,7 @@ server <- function(input, output) {
                     column(6,
                            get_box("Gucci Pants", price = 1000, wage = input$wage, amount = input$amount)
                     )
-                ),
-                br()
+                )
             )
         )
     })
