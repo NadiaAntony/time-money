@@ -1,6 +1,5 @@
 library(shiny)
 library(shinythemes)
-library(flexdashboard)
 library(tidyverse)
 
 ## Set images resource path
