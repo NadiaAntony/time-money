@@ -64,7 +64,7 @@ server <- function(input, output) {
     })
     
     output$result <- renderText({
-        return(paste0("<h4>To earn ", scales::dollar(input$amount), ", you would need to work ", mydays(), " days (", round(mydays() / 365, digits = 2), " years) at ", scales::dollar(input$wage), "/hr</h4>"))
+        return(paste0("<h4>To earn <strong>", scales::dollar(input$amount), "</strong>, you would need to work <strong>", mydays(), " days (", round(mydays() / 365, digits = 2), " years)</strong> at <strong>", scales::dollar(input$wage), "</strong>/hr</h4>"))
     })
     
     output$default <- renderUI({
