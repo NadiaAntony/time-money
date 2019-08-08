@@ -16,7 +16,7 @@ get_box <- function(name, price, wage, amount) {
     , style = "border-style: dashed; border-width: 2px; margin:10px; text-align: center;")
 }
 
-more_choices = c("Top notch camera", "Dinner at expensive restaurant", "Persian Cat", "Bose Headphones")
+more_choices <- c(2300, 200, 1200, 349.99)
 names(more_choices) <- c("Top notch camera", "Dinner at expensive restaurant", "Persian Cat", "Bose Headphones")
 
 ui <- fluidPage(theme = shinytheme("cerulean"),
@@ -39,8 +39,11 @@ ui <- fluidPage(theme = shinytheme("cerulean"),
             HTML("\"<i>Your time is valuable, so value your time</i>\" - Unknown<br><br>The old adage 'Time is Money' still rings true to this day. This application was designed to help put it into context. Simply input a dollar amount and a wage to learn more about your money's purchasing power, and the time it would take to earn that amount."),
             
             h4("Configuration"),
-            numericInput("amount", "Amount", value = 100000, step = 10000),
-            numericInput("wage", "Wage", value = 15, step = .5)
+            numericInput("amount", "Amount ($)", value = 100000, step = 10000),
+            numericInput("wage", "Hourly Wage ($)", value = 15, step = .5),
+            checkboxInput(label = "Enter Weekly Hours", inputId = "whours", value = FALSE),
+            conditionalPanel(condition = "input.whours", 
+                             numericInput("hours", "Weekly Hours", value = 40, step = .5))
         ),
         
         mainPanel(
@@ -50,21 +53,23 @@ ui <- fluidPage(theme = shinytheme("cerulean"),
             hr(),
             h4("Purchasing Power"),
             htmlOutput("default"),
-            conditionalPanel(condition = "input.more", htmlOutput("selected_camera")),
-            selectizeInput("more", label = "Add More", multiple = TRUE,
-                           choices = more_choices, selected = NULL)
+            conditionalPanel(condition = "input.more", htmlOutput("selected_more")),
+            div(h2(selectizeInput("more", label = "Add More", multiple = TRUE,
+                               choices = names(more_choices), selected = NULL)),
+                style = "border-style: dashed; border-width: 2px; margin:15px; padding:20px; text-align: left;")
+            
         )
     )
 )
 
 server <- function(input, output) {
     
-    mydays <- reactive({
-        return(ceiling(input$amount / (8 * input$wage)))
+    workweeks<- reactive({
+        return(ceiling(input$amount / (input$hours * input$wage)))
     })
     
     output$result <- renderText({
-        return(paste0("<h4>To earn <strong>", scales::dollar(input$amount), "</strong>, you would need to work <strong>", mydays(), " days (", round(mydays() / 365, digits = 2), " years)</strong> at <strong>", scales::dollar(input$wage), "</strong>/hr</h4>"))
+        return(paste0("<h4>To earn <strong>", scales::dollar(input$amount), "</strong>, you would need to work <strong>", workweeks(), " weeks (", round(workweeks() / 52, digits = 2), " years)</strong> at <strong>", scales::dollar(input$wage), "</strong>/hr</h4>"))
     })
     
     output$default <- renderUI({
@@ -97,11 +102,11 @@ server <- function(input, output) {
             )
         )
     })
-    output$selected_camera <- renderUI({
+    output$selected_more <- renderUI({
         return(
             tagList(
                 fluidRow(
-                    lapply(input$more, function(x) column(6, get_box(x, price = 2000, wage = input$wage, amount = input$amount)))
+                    lapply(input$more, function(x) column(6, get_box(x, price = more_choices[[x]], wage = input$wage, amount = input$amount)))
                 )
             )
         )
