@@ -54,7 +54,7 @@ ui <- fluidPage(theme = shinytheme("cerulean"),
             h4("Purchasing Power"),
             htmlOutput("default"),
             conditionalPanel(condition = "input.more", htmlOutput("selected_more")),
-            div(h2(selectizeInput("more", label = "Add More", multiple = TRUE,
+            div(h2(selectizeInput("more", label = "View More", multiple = TRUE,
                                choices = names(more_choices), selected = NULL)),
                 style = "border-style: dashed; border-width: 2px; margin:15px; padding:20px; text-align: left;")
             
